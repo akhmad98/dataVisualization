@@ -47,7 +47,13 @@ chart.append("g")
 chart.append("g")
       .attr("class", "y axis")
       .call(y_axis);
-
+    var tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+ 
+    
     chart.selectAll("rect")
         .data(data)
         .enter()
@@ -58,19 +64,18 @@ chart.append("g")
         .attr("y", function (d) { return yScale(d.frequency); })
         .attr("height", function (d) { return svgHeight - yScale(d.frequency); })
         .attr("width", xScale.bandwidth())
-        .on("mouseover", function (a, b) {
-            flour.style("left", e.path[0].getBoundingClientRect().x - flour.node().clientWidth / 2 +
-                e.path[0].getBoundingClientRect().width / 2 + "px")
-                .style("top", e.path[0].getBoundingClientRect().y - 60 + "px")
-                .style("visiblity", "visible")
-                .html('<span class="tool-tip-title">Frequency:</span><span class="tool-tip-value">'.concat(
-                    ("" + d[1]).replace("0.", "."),
-                    "</span>"
-                )
-                );
+        .on("mouseover", function (b, e) {
+
+            tooltip.style("visibility", "visible")
+                // .style("left", "")//e.path.getBoundingClientRect().x - tooltip.node().clientWidth / 2 + b.path[0].getBoundingClientRect().width / 2 + "px")
+                // .style("top", "100px")//d.path[0].getBoundingClientRect().y - 60 + "px")
+                .html('<span class="tool-tip-title">Frequnecy: </span><span class="tool-tip-value">'.concat(b.frequency, "</span>"));  
+        })
+        .on("mousemove", function () {
+            return tooltip.style("top", (d3.event.pageY -30) + "px").style("left", (d3.event.pageX + 10) + "px");
         })
         .on("mouseout", function (d) {
-            flour.style("visibility", "hidden");
+            return tooltip.style("visibility", "hidden");
         });
     
 
